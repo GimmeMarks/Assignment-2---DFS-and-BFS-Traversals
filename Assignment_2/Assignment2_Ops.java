@@ -60,6 +60,8 @@ public class Assignment2_Ops {
 
     //Depth-First Search to find path from start to end (startX, int startY to int endX, int endY)
     public boolean dfs(int startX, int startY, int endX, int endY) {
+        clearVisited(); // To clear all paths just incase from the visited spots before running
+
         Stack<int[]> stack = new Stack<>(); // Create a stack to store cells to visit in dfs
 
         stack.push(new int[]{startX, startY}); // Pushes the start position into the stack
@@ -103,6 +105,9 @@ public class Assignment2_Ops {
 
     // Breadth-First Search to find a path from start to end (startX, int startY to int endX, int endY)
     public boolean bfs(int startX, int startY, int endX, int endY) {
+        clearVisited(); // To clear the dfs from the visited spots before running
+        clearGridPaths(); // To clear the + from the dfs grid spots before running
+
         Queue<int[]> queue = new LinkedList<>(); // Create a queue to store cells to visit in dfs
         
         // Add the start position to the queue
@@ -141,14 +146,6 @@ public class Assignment2_Ops {
         return false;
     }
 
-    // Method to clear the 'visited' array, marking all cells as unvisited
-    public void clearVisited() {
-        //for each row visited make false
-        for (boolean[] row : visited) {
-            Arrays.fill(row, false);
-        }
-    }
-
     // This reconstructs the path from start to the end and marks the path with + for the way to geth there
     private void reconstructPath(Map<String, String> parentMap, int startX, int startY, int endX, int endY) {
         // It reconstructs from the end to the beginning
@@ -170,6 +167,32 @@ public class Assignment2_Ops {
             }
             // Move to the parent of the current position
             current = parentMap.get(current); // stores the parent of each cell visited during the dfs anmd bfs
+        }
+    }
+
+
+    //These are resets to make sure the graph get rid off visited and removes the + from the other graph
+
+    // Method to clear the 'visited' array, marking all cells as unvisited
+    public void clearVisited() {
+        //for each row visited make false
+        for (boolean[] row : visited) {
+            Arrays.fill(row, false);
+        }
+    }
+
+    // ChatGPT help: "ok now i made a BFS, but it displays both paths instead of 1 path. Its displaying the DFS and BFS what could be wrong" 
+    // It gave me potential causes: Shared visited array across searches and Modifying the grid during reconstruction.
+    // I knew that the visited doesnt share cause above so i begain construction on a way to clear the grid of all +
+
+    // Clears any path markings + from the grid before a new search
+    public void clearGridPaths() {
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                if (grid[i][j] == '+') {
+                    grid[i][j] = EMPTY; // Reset path marks to empty space
+                }
+            }
         }
     }
 }
